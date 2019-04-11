@@ -4,7 +4,6 @@ const client = require('socket.io').listen(4000).sockets;
 var app = require('express')();
 var http = require('http').Server(app);
 
-
 app.get('/', function(req, res) {
     res.sendfile('index.html');
  });
@@ -12,8 +11,7 @@ app.get('/', function(req, res) {
  http.listen(3000, function() {
     console.log('listening on localhost:3000');
  });
-
-
+ 
 // Connect to mongo
 mongo.connect('mongodb://127.0.0.1/mongochat',{ useNewUrlParser: true }, function(err, db){
     if(err){
@@ -22,11 +20,11 @@ mongo.connect('mongodb://127.0.0.1/mongochat',{ useNewUrlParser: true }, functio
 
     console.log('MongoDB connected...');
 
-    // Connect to Socket.io
+    // Connect to Socket.ioC:\Users\ahmet\Desktop\1G151210114VolkanDincer2B>nodeC:\Users\ahmet\Desktop\1G151210114VolkanDincer2B>nodeC:\Users\ahmet\Desktop\1G151210114VolkanDincer2B>node
     client.on('connection', function(socket){
         var dbo = db.db("mydb");  // veri tabanı oluşturuluyor
         let chat = dbo.collection('chats'); // veri tabanında chat isimli collection oluşturuluyor
-
+ 
         // Create function to send status
         sendStatus = function(s){
             socket.emit('status', s);
@@ -46,14 +44,15 @@ mongo.connect('mongodb://127.0.0.1/mongochat',{ useNewUrlParser: true }, functio
         socket.on('input', function(data){
             let name = data.name;
             let message = data.message;
+            let kimdenkime =data.kimdenkime;
 
             // Check for name and message
-            if(name == '' || message == ''){
+            if(name == '' || message == '' || kimdenkime ==''){
                 // Send error status
                 sendStatus('Please enter a name and message');
             } else {
                 // Insert message
-                chat.insert({name: name, message: message}, function(){
+                chat.insert({name: name, message: message, kimdenkime: kimdenkime}, function(){
                     client.emit('output', [data]);
 
                     // Send status object
